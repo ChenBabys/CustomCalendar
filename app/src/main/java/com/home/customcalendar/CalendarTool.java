@@ -7,6 +7,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -14,13 +15,13 @@ import android.util.Log;
  * @version 1.0 获取日历数据工具类
  */
 public class CalendarTool {
-    public static final String MONDAY = "周一";
-    public static final String TUESDAY = "周二";
-    public static final String WEDNESDAY = "周三";
-    public static final String THURSDAY = "周四";
-    public static final String FRIDAY = "周五";
-    public static final String SATURDAY = "周六";
-    public static final String SUNDAY = "周日";
+    public static final String MONDAY = "一";
+    public static final String TUESDAY = "二";
+    public static final String WEDNESDAY = "三";
+    public static final String THURSDAY = "四";
+    public static final String FRIDAY = "五";
+    public static final String SATURDAY = "六";
+    public static final String SUNDAY = "日";
     public static final String[] weekDayRow = {SUNDAY, MONDAY, TUESDAY,
             WEDNESDAY, THURSDAY, FRIDAY, SATURDAY};
 
@@ -59,6 +60,11 @@ public class CalendarTool {
      * 闰年月天数数组
      */
     int leapYearMonthDay[] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    /**
+     * 一年所有月份，新增。
+     */
+    int oneYearMonth[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+
 
     public CalendarTool(Context context) {
         this.mContext = context;
@@ -78,7 +84,8 @@ public class CalendarTool {
      */
     public List<DateEntity> getDateEntityList(int year, int month) {
         mDataList.clear();
-        int dayOfNowCalendar = 42;// 当前日历板的日期总数 7*6个数
+        //int dayOfNowCalendar = 42;// 当前日历板的日期总数 7*6个数
+        int dayOfNowCalendar = getWeekDay(year, month) == 6 ? 42 : 35;//换一种写法,如果当前月第一天是周六，那么行数喂6行，否则就为5行
         int dayOfWeek = 0;// 得到当前年月的每一天为星期几
         int selfDaysEndWeek = 0;// 本月的最后一天是星期几
         int startDate = 0;// 当前月的上一个月在本日历的开始日期
@@ -224,4 +231,44 @@ public class CalendarTool {
                 + dayOfWeek);
         return dayOfWeek;
     }
+
+    /**
+     * 判断是否是周末
+     *
+     * @param weekDay
+     * @return
+     */
+    public boolean isWeekend(String weekDay) {
+        if ((TextUtils.equals(CalendarTool.SATURDAY, weekDay))
+                || TextUtils.equals(CalendarTool.SUNDAY, weekDay)) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    /**
+     * 获取在本月（包含）之前两年的月份
+     *
+     * @return
+     */
+    public List<YearMonthEntity> getCalendarList() {
+        List<YearMonthEntity> calendarEntities = new ArrayList<>();
+        //加载距离当前之前的24个月。
+        for (int loadMonths = 0; loadMonths < 24; loadMonths++) {
+            YearMonthEntity yearMonthEntity = new YearMonthEntity();
+            yearMonthEntity.setCurrentYear(this.mYear);
+            yearMonthEntity.setCurrentMonth(this.mMonth);
+            if (this.mMonth - 1 <= 0) {
+                this.mMonth = 12;
+                this.mYear = this.mYear - 1;
+            } else {
+                this.mMonth = this.mMonth - 1;
+            }
+            calendarEntities.add(yearMonthEntity);
+        }
+        return calendarEntities;
+    }
+
 }

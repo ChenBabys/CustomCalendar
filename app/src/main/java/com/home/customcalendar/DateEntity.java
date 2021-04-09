@@ -3,8 +3,7 @@ package com.home.customcalendar;
 import java.io.Serializable;
 
 /**
- * @author daij
- * @version 1.0 日历实体类，添加的参数在获取日历实体集合的时候设置
+ * 日历实体类，添加的参数在获取日历实体集合的时候设置
  */
 public class DateEntity implements Serializable {
 
