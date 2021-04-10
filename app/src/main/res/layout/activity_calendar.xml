@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CalendarActivity">
+
+    <com.home.customcalendar.calendar.CustomCalendarView
+        android:id="@+id/calendar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:daySelectedBackgroundColor="@color/black"
+        app:dayTextColor="@color/date_des_txt"
+        app:dayTextSize="12dp"
+        app:isShowAfterTodayDate="false"
+        app:titleTextSize="12dp"
+        app:todayBackgroundColor="@color/defalut_day_txt" />
+</androidx.constraintlayout.widget.ConstraintLayout>
