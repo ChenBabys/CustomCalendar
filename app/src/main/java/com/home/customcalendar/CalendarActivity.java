@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.Toast;
-
-import com.blankj.utilcode.util.ToastUtils;
 import com.home.customcalendar.calendar.CustomCalendarView;
 
 public class CalendarActivity extends AppCompatActivity {

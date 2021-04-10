@@ -80,6 +80,7 @@ public class CustomCalendarView extends LinearLayoutCompat {
         setBackground(ContextCompat.getDrawable(context, R.color.white));
         LinearLayoutCompat mWeekLine = new LinearLayoutCompat(context);
         mWeekLine.setOrientation(LinearLayoutCompat.HORIZONTAL);
+        mWeekLine.setPadding(dp2px(5), 0, dp2px(5), 0);
         mWeekLine.setWeightSum(7);
         mWeekLine.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         //星期
@@ -108,6 +109,7 @@ public class CustomCalendarView extends LinearLayoutCompat {
         RecyclerView calendarRvView = new RecyclerView(context);
         calendarRvView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         calendarRvView.setId(generateViewId());
+        calendarRvView.setPadding(dp2px(5), 0, dp2px(5), dp2px(100));
         calendarRvView.setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
         //适配器
         CalendarRvViewAdapter adapter = new CalendarRvViewAdapter();
@@ -397,6 +399,9 @@ public class CustomCalendarView extends LinearLayoutCompat {
                     itemView.setClickable(false);
                     itemView.setEnabled(false);
                     tvDay.setTextColor(Color.parseColor("#E2E2E2"));
+                } else if (entity.isAreWeekEnd()) {
+                    //如果是周末
+                    tvDay.setTextColor(weekEndTextColor);
                 } else {
                     //正常状态
                     itemView.setBackgroundColor(Color.WHITE);

@@ -81,11 +81,11 @@ public class CalendarTools {
             for (; calendar.getTimeInMillis() <= endDate.getTime(); ) {
 
                 //月份item
-                DateEntity monthDateBean = new DateEntity();
-                monthDateBean.setDate(calendar.getTime());
-                monthDateBean.setMonthStr(formatYYYYMM.format(monthDateBean.getDate()));
-                monthDateBean.setItemType(DateEntity.item_type_month);
-                dateEntities.add(monthDateBean);
+                DateEntity monthDateEntity = new DateEntity();
+                monthDateEntity.setDate(calendar.getTime());
+                monthDateEntity.setMonthStr(formatYYYYMM.format(monthDateEntity.getDate()));
+                monthDateEntity.setItemType(DateEntity.item_type_month);
+                dateEntities.add(monthDateEntity);
 
                 //获取一个月结束的日期和开始日期
                 monthCalendar.setTime(calendar.getTime());
@@ -112,49 +112,54 @@ public class CalendarTools {
                                 break;
                             case 2:
                                 //周一
-                                addDatePlaceholder(dateEntities, 1, monthDateBean.getMonthStr());
+                                addDatePlaceholder(dateEntities, 1, monthDateEntity.getMonthStr());
                                 break;
                             case 3:
                                 //周二
-                                addDatePlaceholder(dateEntities, 2, monthDateBean.getMonthStr());
+                                addDatePlaceholder(dateEntities, 2, monthDateEntity.getMonthStr());
                                 break;
                             case 4:
                                 //周三
-                                addDatePlaceholder(dateEntities, 3, monthDateBean.getMonthStr());
+                                addDatePlaceholder(dateEntities, 3, monthDateEntity.getMonthStr());
                                 break;
                             case 5:
                                 //周四
-                                addDatePlaceholder(dateEntities, 4, monthDateBean.getMonthStr());
+                                addDatePlaceholder(dateEntities, 4, monthDateEntity.getMonthStr());
                                 break;
                             case 6:
-                                addDatePlaceholder(dateEntities, 5, monthDateBean.getMonthStr());
+                                addDatePlaceholder(dateEntities, 5, monthDateEntity.getMonthStr());
                                 //周五
                                 break;
                             case 7:
-                                addDatePlaceholder(dateEntities, 6, monthDateBean.getMonthStr());
+                                addDatePlaceholder(dateEntities, 6, monthDateEntity.getMonthStr());
                                 //周六
                                 break;
                         }
                     }
 
                     //生成某一天日期实体 日item
-                    DateEntity dateBean = new DateEntity();
-                    dateBean.setDate(monthCalendar.getTime());
-                    dateBean.setDay(monthCalendar.get(Calendar.DAY_OF_MONTH) + "");
-                    dateBean.setMonthStr(monthDateBean.getMonthStr());
+                    DateEntity dateEntity = new DateEntity();
+                    dateEntity.setDate(monthCalendar.getTime());
+                    dateEntity.setDay(monthCalendar.get(Calendar.DAY_OF_MONTH) + "");
+                    dateEntity.setMonthStr(monthDateEntity.getMonthStr());
                     //月份要加上1，因为月份是0-11的
                     if (monthCalendar.get(Calendar.DAY_OF_MONTH) == currentDay
                             && (monthCalendar.get(Calendar.MONTH) + 1) == currentMonth
                             && monthCalendar.get(Calendar.YEAR) == currentYear) {
-                        dateBean.setIsToday(true);
+                        dateEntity.setIsToday(true);
                     }
                     //如果大于或者等于本年，并且大于或等于本月，并且是今天之后的日期则
                     if (monthCalendar.get(Calendar.DAY_OF_MONTH) > currentDay
                             && (monthCalendar.get(Calendar.MONTH) + 1) >= currentMonth
                             && monthCalendar.get(Calendar.YEAR) >= currentYear) {
-                        dateBean.setAfterToday(true);
+                        dateEntity.setAfterToday(true);
                     }
-                    dateEntities.add(dateBean);
+                    //如果是周末则
+                    if (monthCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
+                            || monthCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
+                        dateEntity.setAreWeekEnd(true);
+                    }
+                    dateEntities.add(dateEntity);
 
 
                     //处理一个月的最后一天
@@ -164,26 +169,26 @@ public class CalendarTools {
                         switch (weekDay) {
                             case 1:
                                 //周日
-                                addDatePlaceholder(dateEntities, 6, monthDateBean.getMonthStr());
+                                addDatePlaceholder(dateEntities, 6, monthDateEntity.getMonthStr());
                                 break;
                             case 2:
                                 //周一
-                                addDatePlaceholder(dateEntities, 5, monthDateBean.getMonthStr());
+                                addDatePlaceholder(dateEntities, 5, monthDateEntity.getMonthStr());
                                 break;
                             case 3:
                                 //周二
-                                addDatePlaceholder(dateEntities, 4, monthDateBean.getMonthStr());
+                                addDatePlaceholder(dateEntities, 4, monthDateEntity.getMonthStr());
                                 break;
                             case 4:
                                 //周三
-                                addDatePlaceholder(dateEntities, 3, monthDateBean.getMonthStr());
+                                addDatePlaceholder(dateEntities, 3, monthDateEntity.getMonthStr());
                                 break;
                             case 5:
                                 //周四
-                                addDatePlaceholder(dateEntities, 2, monthDateBean.getMonthStr());
+                                addDatePlaceholder(dateEntities, 2, monthDateEntity.getMonthStr());
                                 break;
                             case 6:
-                                addDatePlaceholder(dateEntities, 1, monthDateBean.getMonthStr());
+                                addDatePlaceholder(dateEntities, 1, monthDateEntity.getMonthStr());
                                 //周5
                                 break;
                         }

@@ -22,8 +22,17 @@ public class DateEntity implements Serializable {
     private Date date;//具体日期
     private String day;//一个月的某天
     private String monthStr;//月份
-    private boolean isToday;
-    private boolean afterToday;
+    private boolean isToday;//是否是时间上的今天
+    private boolean afterToday;//是否是今天之后
+    private boolean areWeekEnd;//是否是周末
+
+    public boolean isAreWeekEnd() {
+        return areWeekEnd;
+    }
+
+    public void setAreWeekEnd(boolean areWeekEnd) {
+        this.areWeekEnd = areWeekEnd;
+    }
 
     public boolean isAfterToday() {
         return afterToday;
