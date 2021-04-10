@@ -15,6 +15,7 @@ import androidx.appcompat.widget.AppCompatTextView;
  * Created by ChenYesheng On 2021/4/9 20:43
  * Desc:
  */
+@Deprecated
 public class CalendarTextView extends AppCompatTextView {
 
     public boolean isToday;

@@ -6,7 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".CalendarActivity">
 
-    <com.home.customcalendar.CustomCalendarView
+    <com.home.customcalendar.calendar.CustomCalendarView
+        android:id="@+id/calendar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:daySelectedBackgroundColor="@color/black"
+        app:dayTextColor="@color/date_des_txt"
+        app:dayTextSize="12dp"
+        app:isShowAfterTodayDate="false"
+        app:titleTextSize="12dp"
+        app:todayBackgroundColor="@color/defalut_day_txt" />
 </androidx.constraintlayout.widget.ConstraintLayout>

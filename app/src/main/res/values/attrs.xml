@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomCalendarView">
+        <attr name="titleTextColor" format="color|reference" />
+        <attr name="titleTextSize" format="dimension|reference" />
+        <attr name="dayTextColor" format="color|reference" />
+        <attr name="daySelectedBackgroundColor" format="color|reference" />
+        <attr name="selectedBetweenBackgroundColor" format="color|reference" />
+        <attr name="dayTextSize" format="dimension|reference" />
+        <attr name="isShowAfterTodayDate" format="boolean|reference" />
+        <attr name="todayBackgroundColor" format="color|reference" />
+        <attr name="weekEndTextColor" format="color|reference" />
+    </declare-styleable>
+
+
+</resources>
+
