@@ -9,12 +9,5 @@
     <com.home.customcalendar.calendar.CustomCalendarView
         android:id="@+id/calendar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:daySelectedBackgroundColor="@color/tip_normal"
-        app:dayTextColor="@color/design_default_color_error"
-        app:selectedBetweenBackgroundColor="@color/purple_700"
-        app:dayTextSize="6sp"
-        app:isShowAfterTodayDate="true"
-        app:titleTextSize="6sp"
-        app:todayBackgroundColor="@color/defalut_day_txt" />
+        android:layout_height="match_parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
