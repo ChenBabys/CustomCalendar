@@ -31,7 +31,8 @@ import java.util.List;
  * Desc: 自定义日历~
  */
 public class CustomCalendarView extends LinearLayoutCompat {
-    private int titleTextColor, dayTextColor, daySelectedBackgroundColor, todayBackgroundColor, weekEndTextColor, selectedBetweenBackgroundColor;
+    private int titleTextColor, dayTextColor, daySelectedBackgroundColor, todayBackgroundColor,
+            weekEndTextColor, selectedBetweenBackgroundColor;
     private float dayTextSize, titleTextSize;
     private boolean isShowAfterTodayDate;
     private OnDateSelected onDateSelected;//选中监听
@@ -60,7 +61,7 @@ public class CustomCalendarView extends LinearLayoutCompat {
     @SuppressLint("RestrictedApi")
     private void initAttr(Context context, AttributeSet attrs, int defStyleAttr) {
         if (attrs != null) {
-            TintTypedArray tintTypedArray = TintTypedArray.obtainStyledAttributes(context, defStyleAttr, R.styleable.CustomCalendarView);
+            TintTypedArray tintTypedArray = TintTypedArray.obtainStyledAttributes(context, attrs, R.styleable.CustomCalendarView, defStyleAttr, 0);
             titleTextColor = tintTypedArray.getColor(R.styleable.CustomCalendarView_titleTextColor, Color.parseColor("#000000"));
             dayTextColor = tintTypedArray.getColor(R.styleable.CustomCalendarView_dayTextColor, Color.parseColor("#000000"));
             daySelectedBackgroundColor = tintTypedArray.getColor(R.styleable.CustomCalendarView_daySelectedBackgroundColor, Color.parseColor("#3A8AFD"));
@@ -69,7 +70,7 @@ public class CustomCalendarView extends LinearLayoutCompat {
             weekEndTextColor = tintTypedArray.getColor(R.styleable.CustomCalendarView_weekEndTextColor, Color.parseColor("#208CF9"));
             dayTextSize = tintTypedArray.getDimension(R.styleable.CustomCalendarView_dayTextSize, dp2px(6));
             titleTextSize = tintTypedArray.getDimension(R.styleable.CustomCalendarView_titleTextSize, dp2px(6));
-            isShowAfterTodayDate = tintTypedArray.getBoolean(R.styleable.CustomCalendarView_isShowAfterTodayDate, true);//默认隐藏
+            isShowAfterTodayDate = tintTypedArray.getBoolean(R.styleable.CustomCalendarView_isShowAfterTodayDate, false);//默认隐藏
             tintTypedArray.recycle();
         }
         initView(context);
@@ -95,7 +96,7 @@ public class CustomCalendarView extends LinearLayoutCompat {
             weekView.setLayoutParams(textViewParam);
             weekView.setTextSize(sp2px(6));
             if (CalendarTools.weekDayRow[weekItem].equals(CalendarTools.SUNDAY) | CalendarTools.weekDayRow[weekItem].equals(CalendarTools.SATURDAY)) {
-                weekView.setTextColor(weekEndTextColor);//蓝色
+                weekView.setTextColor(getWeekEndTextColor());//蓝色
             } else {
                 weekView.setTextColor(Color.parseColor("#6A6A6B"));//偏黑色
             }
@@ -130,6 +131,8 @@ public class CustomCalendarView extends LinearLayoutCompat {
         adapter.setOnItemClickListener((view, position) -> {
             onItemClick(adapter, adapter.mDataList.get(position));
         });
+        //默认显示到最后一项
+        calendarRvView.scrollToPosition(adapter.getItemCount() - 1);
         //添加到跟布局
         addView(mWeekLine);
         addView(line);
@@ -247,6 +250,7 @@ public class CustomCalendarView extends LinearLayoutCompat {
             if (viewType == DateEntity.item_type_day) {
                 View rootView = createDayView(parent);
                 DayViewHolder dayViewHolder = new DayViewHolder(rootView);
+                dayViewHolder.setIsRecyclable(false);//不给复用，否则上下大幅度滑动时候有几率出现错乱的填充项
                 dayViewHolder.itemView.setOnClickListener(v -> {
                     if (onItemClickListener != null) {
                         onItemClickListener.onItemClick(v, dayViewHolder.getLayoutPosition());
@@ -257,6 +261,7 @@ public class CustomCalendarView extends LinearLayoutCompat {
             } else if (viewType == DateEntity.item_type_month) {
                 View rootView = createMonthTitleView(parent);
                 MonthViewHolder monthViewHolder = new MonthViewHolder(rootView);
+                monthViewHolder.setIsRecyclable(false);//不给复用，否则上下大幅度滑动时候有几率出现错乱的填充项
                 monthViewHolder.itemView.setOnClickListener(v -> {
                     if (onItemClickListener != null) {
                         onItemClickListener.onItemClick(v, monthViewHolder.getLayoutPosition());
@@ -271,7 +276,7 @@ public class CustomCalendarView extends LinearLayoutCompat {
         private View createMonthTitleView(@NonNull ViewGroup parent) {
             TextView mMonthTitle = new TextView(parent.getContext());
             mMonthTitle.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp2px(50)));
-            mMonthTitle.setTextColor(titleTextColor);
+            mMonthTitle.setTextColor(getTitleTextColor());
             //标题项加分割线
             GradientDrawable drawable = new GradientDrawable();
             drawable.setStroke(1, Color.parseColor("#E2E2E2"));
@@ -279,7 +284,7 @@ public class CustomCalendarView extends LinearLayoutCompat {
             mMonthTitle.setSingleLine();
             mMonthTitle.setIncludeFontPadding(false);//去除默认边距
             mMonthTitle.getPaint().setFakeBoldText(true);//粗体
-            mMonthTitle.setTextSize(titleTextSize);
+            mMonthTitle.setTextSize(getTitleTextSize());
             mMonthTitle.setEllipsize(TextUtils.TruncateAt.MARQUEE);
             mMonthTitle.setGravity(Gravity.CENTER);
             return mMonthTitle;
@@ -295,10 +300,10 @@ public class CustomCalendarView extends LinearLayoutCompat {
             //天
             TextView dayView = new TextView(parent.getContext());
             dayView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            dayView.setTextColor(dayTextColor);
+            dayView.setTextColor(getDayTextColor());
             dayView.setSingleLine();
             //dayView.setId(generateViewId());
-            dayView.setTextSize(dayTextSize);
+            dayView.setTextSize(getDayTextSize());
             dayView.setIncludeFontPadding(false);//去除默认边距
             dayView.getPaint().setFakeBoldText(true);//粗体
             dayView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
@@ -361,7 +366,7 @@ public class CustomCalendarView extends LinearLayoutCompat {
                 //如果是开始或者结束
                 if (entity.getItemState() == DateEntity.ITEM_STATE_BEGIN_DATE || entity.getItemState() == DateEntity.ITEM_STATE_END_DATE) {
                     GradientDrawable drawable = new GradientDrawable();
-                    drawable.setColor(daySelectedBackgroundColor);
+                    drawable.setColor(getDaySelectedBackgroundColor());
                     //设置图片四个角圆形半径：1、2两个参数表示左上角，3、4表示右上角，5、6表示右下角，7、8表示左下角
                     //drawable.setCornerRadii(new float[]{dp2px(5), dp2px(5), 0, 0, 0, 0, dp2px(5), dp2px(5)});
                     drawable.setCornerRadius(dp2px(2));
@@ -375,7 +380,7 @@ public class CustomCalendarView extends LinearLayoutCompat {
                     }
                 } else if (entity.getItemState() == DateEntity.ITEM_STATE_SELECTED) {
                     //选中开始和结束，中间日期的状态
-                    itemView.setBackgroundColor(selectedBetweenBackgroundColor);
+                    itemView.setBackgroundColor(getSelectedBetweenBackgroundColor());
                     tvDay.setTextColor(Color.BLACK);
                     //如果是今天
                     if (entity.isIsToday()) {
@@ -386,26 +391,26 @@ public class CustomCalendarView extends LinearLayoutCompat {
                     //如果是今天
                     tvDay.setText("今天");
                     GradientDrawable drawable = new GradientDrawable();
-                    drawable.setColor(todayBackgroundColor);
+                    drawable.setColor(getTodayBackgroundColor());
                     //设置图片四个角圆形半径：1、2两个参数表示左上角，3、4表示右上角，5、6表示右下角，7、8表示左下角
                     //drawable.setCornerRadii(new float[]{dp2px(5), dp2px(5), 0, 0, 0, 0, dp2px(5), dp2px(5)});
                     drawable.setCornerRadius(dp2px(2));
                     itemView.setBackground(drawable);
                     tvDay.setTextColor(Color.WHITE);
-                } else if (entity.isAfterToday() && isShowAfterTodayDate) {
+                } else if (entity.isAfterToday() && !isShowAfterTodayDate()) {
                     //如果是今天之后的日期
                     tvDay.setClickable(false);
                     tvDay.setEnabled(false);
                     itemView.setClickable(false);
                     itemView.setEnabled(false);
-                    tvDay.setTextColor(Color.parseColor("#E2E2E2"));
+                    tvDay.setTextColor(Color.parseColor("#CDCDCD"));//天不可用的时候的填充颜色！
                 } else if (entity.isAreWeekEnd()) {
                     //如果是周末
-                    tvDay.setTextColor(weekEndTextColor);
+                    tvDay.setTextColor(getWeekEndTextColor());
                 } else {
                     //正常状态
                     itemView.setBackgroundColor(Color.WHITE);
-                    tvDay.setTextColor(Color.BLACK);
+                    tvDay.setTextColor(getDayTextColor());
                 }
             }
         }
@@ -447,4 +452,81 @@ public class CustomCalendarView extends LinearLayoutCompat {
         this.onDateSelected = onDateSelected;
     }
 
+
+    /**
+     * 属性设置方法外露给控件
+     *
+     * @return
+     */
+    private int getTitleTextColor() {
+        return titleTextColor;
+    }
+
+    public void setTitleTextColor(int titleTextColor) {
+        this.titleTextColor = titleTextColor;
+    }
+
+    private int getDayTextColor() {
+        return dayTextColor;
+    }
+
+    public void setDayTextColor(int dayTextColor) {
+        this.dayTextColor = dayTextColor;
+    }
+
+    private int getDaySelectedBackgroundColor() {
+        return daySelectedBackgroundColor;
+    }
+
+    public void setDaySelectedBackgroundColor(int daySelectedBackgroundColor) {
+        this.daySelectedBackgroundColor = daySelectedBackgroundColor;
+    }
+
+    private int getTodayBackgroundColor() {
+        return todayBackgroundColor;
+    }
+
+    public void setTodayBackgroundColor(int todayBackgroundColor) {
+        this.todayBackgroundColor = todayBackgroundColor;
+    }
+
+    private int getWeekEndTextColor() {
+        return weekEndTextColor;
+    }
+
+    public void setWeekEndTextColor(int weekEndTextColor) {
+        this.weekEndTextColor = weekEndTextColor;
+    }
+
+    private int getSelectedBetweenBackgroundColor() {
+        return selectedBetweenBackgroundColor;
+    }
+
+    public void setSelectedBetweenBackgroundColor(int selectedBetweenBackgroundColor) {
+        this.selectedBetweenBackgroundColor = selectedBetweenBackgroundColor;
+    }
+
+    private float getDayTextSize() {
+        return dayTextSize;
+    }
+
+    public void setDayTextSize(float dayTextSize) {
+        this.dayTextSize = dayTextSize;
+    }
+
+    private float getTitleTextSize() {
+        return titleTextSize;
+    }
+
+    public void setTitleTextSize(float titleTextSize) {
+        this.titleTextSize = titleTextSize;
+    }
+
+    private boolean isShowAfterTodayDate() {
+        return isShowAfterTodayDate;
+    }
+
+    public void setShowAfterTodayDate(boolean showAfterTodayDate) {
+        isShowAfterTodayDate = showAfterTodayDate;
+    }
 }

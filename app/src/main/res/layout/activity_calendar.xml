@@ -10,10 +10,11 @@
         android:id="@+id/calendar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:daySelectedBackgroundColor="@color/black"
-        app:dayTextColor="@color/date_des_txt"
-        app:dayTextSize="12dp"
-        app:isShowAfterTodayDate="false"
-        app:titleTextSize="12dp"
+        app:daySelectedBackgroundColor="@color/tip_normal"
+        app:dayTextColor="@color/design_default_color_error"
+        app:selectedBetweenBackgroundColor="@color/purple_700"
+        app:dayTextSize="6sp"
+        app:isShowAfterTodayDate="true"
+        app:titleTextSize="6sp"
         app:todayBackgroundColor="@color/defalut_day_txt" />
 </androidx.constraintlayout.widget.ConstraintLayout>
