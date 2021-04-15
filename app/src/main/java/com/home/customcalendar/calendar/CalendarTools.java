@@ -63,7 +63,7 @@ public class CalendarTools {
             calendar.setTime(startDate);
 
             //结束日期
-            calendar.add(Calendar.YEAR, 2);
+            calendar.add(Calendar.YEAR, mYearCount);
             Date endDate = new Date(calendar.getTimeInMillis());
 
             //格式化开始日期和结束日期为 yyyy-mm-dd格式

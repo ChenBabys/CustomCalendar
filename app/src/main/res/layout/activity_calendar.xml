@@ -9,5 +9,10 @@
     <com.home.customcalendar.calendar.CustomCalendarView
         android:id="@+id/calendar"
         android:layout_width="match_parent"
+        app:showYearCount="4"
         android:layout_height="match_parent" />
+
+<!--    <com.home.customcalendar.cancasView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"/>-->
 </androidx.constraintlayout.widget.ConstraintLayout>

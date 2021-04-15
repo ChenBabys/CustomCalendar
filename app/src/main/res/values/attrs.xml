@@ -10,6 +10,7 @@
         <attr name="isShowAfterTodayDate" format="boolean|reference" />
         <attr name="todayBackgroundColor" format="color|reference" />
         <attr name="weekEndTextColor" format="color|reference" />
+        <attr name="showYearCount" format="integer|reference" />
     </declare-styleable>
 
 

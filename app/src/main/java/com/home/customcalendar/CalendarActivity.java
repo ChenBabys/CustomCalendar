@@ -23,6 +23,7 @@ public class CalendarActivity extends AppCompatActivity {
 //        customCalendarView.setWeekEndTextColor(Color.parseColor("#000000"));
 //        customCalendarView.setSelectedBetweenBackgroundColor(Color.parseColor("#DA6262"));
 //        customCalendarView.setTodayBackgroundColor(Color.parseColor("#DA6262"));
+//        customCalendarView.setShowYearCount(10);
         customCalendarView.setOnDateSelected((startDate, endDate) -> {
             Toast.makeText(this, "开始" + startDate + "--结束" + endDate, Toast.LENGTH_SHORT).show();
         });

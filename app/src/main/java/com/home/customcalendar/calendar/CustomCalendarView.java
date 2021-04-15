@@ -36,8 +36,11 @@ public class CustomCalendarView extends LinearLayoutCompat {
     private float dayTextSize, titleTextSize;
     private boolean isShowAfterTodayDate;
     private OnDateSelected onDateSelected;//选中监听
+    private Integer showYearCount;
     private DateEntity startDate;//开始时间
     private DateEntity endDate;//结束时间
+    private CalendarRvViewAdapter adapter;
+    private RecyclerView calendarRvView;
     @SuppressLint("SimpleDateFormat")
     //格式化本VIew返回给接口的时间。
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd");
@@ -71,6 +74,7 @@ public class CustomCalendarView extends LinearLayoutCompat {
             dayTextSize = tintTypedArray.getDimension(R.styleable.CustomCalendarView_dayTextSize, dp2px(6));
             titleTextSize = tintTypedArray.getDimension(R.styleable.CustomCalendarView_titleTextSize, dp2px(6));
             isShowAfterTodayDate = tintTypedArray.getBoolean(R.styleable.CustomCalendarView_isShowAfterTodayDate, false);//默认隐藏
+            showYearCount = tintTypedArray.getInteger(R.styleable.CustomCalendarView_showYearCount, 2);//默认两年
             tintTypedArray.recycle();
         }
         initView(context);
@@ -107,13 +111,13 @@ public class CustomCalendarView extends LinearLayoutCompat {
         line.setBackgroundColor(Color.parseColor("#DBDDDF"));
         line.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 1));
         //日历月份标题和网格日历视图
-        RecyclerView calendarRvView = new RecyclerView(context);
+        calendarRvView = new RecyclerView(context);
         calendarRvView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         calendarRvView.setId(generateViewId());
         calendarRvView.setPadding(dp2px(5), 0, dp2px(5), dp2px(100));
         calendarRvView.setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
         //适配器
-        CalendarRvViewAdapter adapter = new CalendarRvViewAdapter();
+        adapter = new CalendarRvViewAdapter();
         GridLayoutManager layoutManager = new GridLayoutManager(context, 7);
         //设置每行的格子数目~
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -127,12 +131,13 @@ public class CustomCalendarView extends LinearLayoutCompat {
         calendarRvView.setLayoutManager(layoutManager);
         calendarRvView.addItemDecoration(new CalendarItemDecoration());
         calendarRvView.setAdapter(adapter);
-        adapter.setDateList(CalendarTools.getInstance().getDateEntities(Calendar.getInstance().getTime(), 2));
+        setShowYearCount(showYearCount);//下面这两句放到这里面执行
+//        adapter.setDateList(CalendarTools.getInstance().getDateEntities(Calendar.getInstance().getTime(), getShowYearCount()));
+//        //默认显示到最后一项
+//        calendarRvView.scrollToPosition(adapter.getItemCount() - 1);
         adapter.setOnItemClickListener((view, position) -> {
             onItemClick(adapter, adapter.mDataList.get(position));
         });
-        //默认显示到最后一项
-        calendarRvView.scrollToPosition(adapter.getItemCount() - 1);
         //添加到跟布局
         addView(mWeekLine);
         addView(line);
@@ -462,6 +467,11 @@ public class CustomCalendarView extends LinearLayoutCompat {
         return titleTextColor;
     }
 
+    /**
+     * 设置标题的文本颜色
+     *
+     * @param titleTextColor
+     */
     public void setTitleTextColor(int titleTextColor) {
         this.titleTextColor = titleTextColor;
     }
@@ -470,6 +480,11 @@ public class CustomCalendarView extends LinearLayoutCompat {
         return dayTextColor;
     }
 
+    /**
+     * 设置今天的文本颜色
+     *
+     * @param dayTextColor
+     */
     public void setDayTextColor(int dayTextColor) {
         this.dayTextColor = dayTextColor;
     }
@@ -478,6 +493,11 @@ public class CustomCalendarView extends LinearLayoutCompat {
         return daySelectedBackgroundColor;
     }
 
+    /**
+     * 设置今天被选中后的背景色
+     *
+     * @param daySelectedBackgroundColor
+     */
     public void setDaySelectedBackgroundColor(int daySelectedBackgroundColor) {
         this.daySelectedBackgroundColor = daySelectedBackgroundColor;
     }
@@ -486,6 +506,11 @@ public class CustomCalendarView extends LinearLayoutCompat {
         return todayBackgroundColor;
     }
 
+    /**
+     * 设置今天的背景色
+     *
+     * @param todayBackgroundColor
+     */
     public void setTodayBackgroundColor(int todayBackgroundColor) {
         this.todayBackgroundColor = todayBackgroundColor;
     }
@@ -494,6 +519,11 @@ public class CustomCalendarView extends LinearLayoutCompat {
         return weekEndTextColor;
     }
 
+    /**
+     * 设置周末的文本颜色
+     *
+     * @param weekEndTextColor
+     */
     public void setWeekEndTextColor(int weekEndTextColor) {
         this.weekEndTextColor = weekEndTextColor;
     }
@@ -502,6 +532,11 @@ public class CustomCalendarView extends LinearLayoutCompat {
         return selectedBetweenBackgroundColor;
     }
 
+    /**
+     * 设置选中开始和结束后中间的日期背景色
+     *
+     * @param selectedBetweenBackgroundColor
+     */
     public void setSelectedBetweenBackgroundColor(int selectedBetweenBackgroundColor) {
         this.selectedBetweenBackgroundColor = selectedBetweenBackgroundColor;
     }
@@ -510,6 +545,11 @@ public class CustomCalendarView extends LinearLayoutCompat {
         return dayTextSize;
     }
 
+    /**
+     * 设置今天的文本大小
+     *
+     * @param dayTextSize
+     */
     public void setDayTextSize(float dayTextSize) {
         this.dayTextSize = dayTextSize;
     }
@@ -518,6 +558,11 @@ public class CustomCalendarView extends LinearLayoutCompat {
         return titleTextSize;
     }
 
+    /**
+     * 设置标题文本大小
+     *
+     * @param titleTextSize
+     */
     public void setTitleTextSize(float titleTextSize) {
         this.titleTextSize = titleTextSize;
     }
@@ -526,7 +571,27 @@ public class CustomCalendarView extends LinearLayoutCompat {
         return isShowAfterTodayDate;
     }
 
+    /**
+     * 是否显示今天之后的日期
+     *
+     * @param showAfterTodayDate
+     */
     public void setShowAfterTodayDate(boolean showAfterTodayDate) {
         isShowAfterTodayDate = showAfterTodayDate;
+    }
+
+    private Integer getShowYearCount() {
+        return showYearCount;
+    }
+
+    /**
+     * 设置从当前月份往回数，显示的年数
+     *
+     * @param showYearCount
+     */
+    public void setShowYearCount(Integer showYearCount) {
+        this.showYearCount = showYearCount;
+        adapter.setDateList(CalendarTools.getInstance().getDateEntities(Calendar.getInstance().getTime(), getShowYearCount()));
+        calendarRvView.scrollToPosition(adapter.getItemCount() - 1);
     }
 }
