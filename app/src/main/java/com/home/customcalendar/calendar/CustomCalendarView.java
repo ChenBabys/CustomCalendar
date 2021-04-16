@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.home.customcalendar.R;
 
 import java.text.SimpleDateFormat;
@@ -159,9 +160,14 @@ public class CustomCalendarView extends LinearLayoutCompat {
             dateEntity.setItemState(DateEntity.ITEM_STATE_BEGIN_DATE);
         } else if (endDate == null) {
             //如果选中了开始日期但没有选中结束日期，本次操作选中结束日期
-            //如果当前点击的结束日期跟开始日期一致 则不做操作
+            //如果当前点击的结束日期跟开始日期一致
             if (startDate == dateEntity) {
-
+                //如果开始和结束时间都不空，并且开始时间和结束时间相同~
+                endDate = dateEntity;
+                endDate.setItemState(DateEntity.ITEM_STATE_BEGIN_AND_END_SAME);//endDate或者startDate任意一个设置为same都行
+                if (onDateSelected != null) {//回调
+                    onDateSelected.selected(simpleDateFormat.format(startDate.getDate()), simpleDateFormat.format(endDate.getDate()));
+                }
             } else if (dateEntity.getDate().getTime() < startDate.getDate().getTime()) {
                 //当前点选的日期小于当前选中的开始日期 则本次操作重新选中开始日期
                 startDate.setItemState(DateEntity.ITEM_STATE_NORMAL);
@@ -181,9 +187,7 @@ public class CustomCalendarView extends LinearLayoutCompat {
             clearSelectState(adapter);
             //重新选择开始日期,结束日期清除
             startDate.setItemState(DateEntity.ITEM_STATE_NORMAL);
-            startDate = dateEntity;
-            startDate.setItemState(DateEntity.ITEM_STATE_BEGIN_DATE);
-
+            startDate = null;
             endDate.setItemState(DateEntity.ITEM_STATE_NORMAL);
             endDate = null;
         }
@@ -369,7 +373,9 @@ public class CustomCalendarView extends LinearLayoutCompat {
                 tvDay.setText(entity.getDay());
                 mCheckSignText.setVisibility(GONE);
                 //如果是开始或者结束
-                if (entity.getItemState() == DateEntity.ITEM_STATE_BEGIN_DATE || entity.getItemState() == DateEntity.ITEM_STATE_END_DATE) {
+                if (entity.getItemState() == DateEntity.ITEM_STATE_BEGIN_DATE
+                        || entity.getItemState() == DateEntity.ITEM_STATE_END_DATE
+                        || entity.getItemState() == DateEntity.ITEM_STATE_BEGIN_AND_END_SAME) {
                     GradientDrawable drawable = new GradientDrawable();
                     drawable.setColor(getDaySelectedBackgroundColor());
                     //设置图片四个角圆形半径：1、2两个参数表示左上角，3、4表示右上角，5、6表示右下角，7、8表示左下角
@@ -380,6 +386,8 @@ public class CustomCalendarView extends LinearLayoutCompat {
                     mCheckSignText.setVisibility(VISIBLE);
                     if (entity.getItemState() == DateEntity.ITEM_STATE_END_DATE) {
                         mCheckSignText.setText("结束");
+                    } else if (entity.getItemState() == DateEntity.ITEM_STATE_BEGIN_AND_END_SAME) {
+                        mCheckSignText.setText("起/止");
                     } else {
                         mCheckSignText.setText("开始");
                     }

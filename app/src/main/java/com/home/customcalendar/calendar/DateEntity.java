@@ -17,6 +17,7 @@ public class DateEntity implements Serializable {
     public static int ITEM_STATE_END_DATE = 2;//结束日期
     public static int ITEM_STATE_SELECTED = 3;//选中状态
     public static int ITEM_STATE_NORMAL = 4;//正常状态
+    public static int ITEM_STATE_BEGIN_AND_END_SAME = 5;//开始和结束同一天的状态
     public int itemState = ITEM_STATE_NORMAL;
 
     private Date date;//具体日期
